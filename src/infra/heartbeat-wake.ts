@@ -43,9 +43,14 @@ function schedule(coalesceMs: number) {
       schedule(DEFAULT_RETRY_MS);
     } finally {
       running = false;
-      if (pendingReason || scheduled) schedule(coalesceMs);
+      if (pendingReason || scheduled) {
+        // Ensure new timer is created with unref
+        const newCoalesce = pendingReason && pendingReason !== "requested" ? DEFAULT_RETRY_MS : coalesceMs;
+        schedule(newCoalesce);
+      }
     }
   }, coalesceMs);
+  // Unref so we don't prevent process exit
   timer.unref?.();
 }
 

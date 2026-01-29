@@ -11,8 +11,8 @@ export async function runWithConcurrency<T>(
 
   const workers = Array.from({ length: resolvedLimit }, async () => {
     while (true) {
-      const index = next;
-      next += 1;
+      // Atomically get-and-increment to avoid race conditions with multiple workers
+      const index = next++;
       if (index >= tasks.length) return;
       try {
         results[index] = await tasks[index]();

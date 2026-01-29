@@ -126,7 +126,7 @@ export async function handleNostrProfileSave(host: MoltbotApp) {
       | { ok?: boolean; error?: string; details?: unknown; persisted?: boolean }
       | null;
 
-    if (!response.ok || data?.ok === false || !data) {
+    if (!response.ok || !data || data.ok === false) {
       const errorMessage = data?.error ?? `Profile update failed (${response.status})`;
       host.nostrProfileFormState = {
         ...state,
